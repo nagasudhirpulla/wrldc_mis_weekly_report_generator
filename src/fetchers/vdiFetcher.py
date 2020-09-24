@@ -45,13 +45,13 @@ class VdiFetcher():
                         'station': groupDf['NODE_NAME'][ind],
                         'maxVol': groupDf['MAXIMUM'][ind],
                         'minVol': groupDf['MINIMUM'][ind],
-                        'lessThanBand': round(groupDf['LESS_THAN_BAND'][ind], 2),
-                        'bwBand': round(groupDf['BETWEEN_BAND'][ind], 2),
-                        'greatThanBand': round(groupDf['GREATER_THAN_BAND'][ind], 2),
+                        'lessThanBand': "{:0.2f}".format(groupDf['LESS_THAN_BAND'][ind]),
+                        'bwBand': "{:0.2f}".format(groupDf['BETWEEN_BAND'][ind]),
+                        'greatThanBand': "{:0.2f}".format(groupDf['GREATER_THAN_BAND'][ind]),
                         'lessBandHrs': convertHrsToSpanStr(groupDf['LESS_THAN_BAND_INHRS'][ind]),
                         'greatBandHrs': convertHrsToSpanStr(groupDf['GREATER_THAN_BAND_INHRS'][ind]),
                         'outOfBandHrs': convertHrsToSpanStr(groupDf['OUT_OF_BAND_INHRS'][ind]),
-                        'vdi': round(groupDf['VDI'][ind], 2)
+                        'vdi': "{:0.2f}".format(groupDf['VDI'][ind])
                     }
                     VDIRows400Kv.append(tempDict)
             elif nameOfGroup == 765:
@@ -60,13 +60,13 @@ class VdiFetcher():
                         'station': groupDf['NODE_NAME'][ind],
                         'maxVol': groupDf['MAXIMUM'][ind],
                         'minVol': groupDf['MINIMUM'][ind],
-                        'lessThanBand': round(groupDf['LESS_THAN_BAND'][ind], 2),
-                        'bwBand': round(groupDf['BETWEEN_BAND'][ind], 2),
-                        'greatThanBand': round(groupDf['GREATER_THAN_BAND'][ind], 2),
+                        'lessThanBand': "{:0.2f}".format(groupDf['LESS_THAN_BAND'][ind]),
+                        'bwBand': "{:0.2f}".format(groupDf['BETWEEN_BAND'][ind]),
+                        'greatThanBand': "{:0.2f}".format(groupDf['GREATER_THAN_BAND'][ind]),
                         'lessBandHrs': convertHrsToSpanStr(groupDf['LESS_THAN_BAND_INHRS'][ind]),
                         'greatBandHrs': convertHrsToSpanStr(groupDf['GREATER_THAN_BAND_INHRS'][ind]),
                         'outOfBandHrs': convertHrsToSpanStr(groupDf['OUT_OF_BAND_INHRS'][ind]),
-                        'vdi': round(groupDf['VDI'][ind], 2)
+                        'vdi': "{:0.2f}".format(groupDf['VDI'][ind])
                     }
                     VDIRows765Kv.append(tempDict)
         derivedVDIDict['vdi400Rows'] = VDIRows400Kv

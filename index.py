@@ -102,7 +102,7 @@ reportContext['longTimeOtgs'] = fetchlongTimeUnrevivedForcedOutages(
 freqProfFetcher = FrequencyProfileFetcher(appDbConStr)
 freqProfile = freqProfFetcher.fetchDerivedFrequency(startDate, endDate)
 reportContext['freqProfRows'] = freqProfile['freqProfRows']
-reportContext['weeklyFdi'] = round(freqProfile['weeklyFdi'], 3)
+reportContext['weeklyFdi'] = "{:0.2f}".format(freqProfile['weeklyFdi'])
 
 # get stationwise vdi data
 vdiFetcher = VdiFetcher(appDbConStr)

@@ -43,15 +43,15 @@ class FrequencyProfileFetcher():
         for ind in df.index:
             tempDict = {
                 'date_day': df['DATE_KEY'][ind],
-                'max_freq': df['MAXIMUM'][ind],
-                'min_freq': df['MINIMUM'][ind],
-                'avg_freq': df['AVERAGE'][ind],
-                'less_than_band': df['LESS_THAN_BAND'][ind],
-                'bw_band': df['BETWEEN_BAND'][ind],
-                'great_than_band': df['GREATER_THAN_BAND'][ind],
-                'out_of_band': df['OUT_OF_BAND'][ind],
-                'out_hrs': df['OUT_OF_BAND_INHRS'][ind],
-                'fdi': df['FDI'][ind]
+                'max_freq': "{:0.2f}".format(df['MAXIMUM'][ind]),
+                'min_freq': "{:0.2f}".format(df['MINIMUM'][ind]),
+                'avg_freq': "{:0.2f}".format(df['AVERAGE'][ind]),
+                'less_than_band': "{:0.2f}".format(df['LESS_THAN_BAND'][ind]),
+                'bw_band': "{:0.2f}".format(df['BETWEEN_BAND'][ind]),
+                'great_than_band': "{:0.2f}".format(df['GREATER_THAN_BAND'][ind]),
+                'out_of_band': "{:0.2f}".format(df['OUT_OF_BAND'][ind]),
+                'out_hrs': "{:0.2f}".format(df['OUT_OF_BAND_INHRS'][ind]),
+                'fdi': "{:0.2f}".format(df['FDI'][ind])
             }
             derFreqRows.append(tempDict)
         derFrequencyDict['freqProfRows'] = derFreqRows
