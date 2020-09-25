@@ -40,8 +40,8 @@ class AnglViolationsFetcher():
                                 SELECT id, data_date, angle_pair,
                                     coalesce(angular_limit, 0) AS angular_limit,
                                     coalesce(viol_perc, 0) AS viol_perc,
-                                    coalesce(max_viol, 0) AS max_viol,
-                                    coalesce(min_viol, 0) AS min_viol,
+                                    max_viol,
+                                    min_viol,
                                     data_type
                                 FROM mis_warehouse.daily_angles_data
                                 WHERE 
