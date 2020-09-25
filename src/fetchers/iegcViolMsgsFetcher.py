@@ -33,7 +33,7 @@ class IegcViolMsgsFetcher():
             sql_fetch = """ SELECT * FROM mis_warehouse.IEGC_VIOLATION_MESSAGE_DATA 
                         where (date_time BETWEEN TO_DATE(:col1, 'YYYY-MM-DD') and TO_DATE(:col2, 'YYYY-MM-DD'))
                         and not(entity='nan') 
-                        order by date_time
+                        order by date_time, message
                         """
             cursor.execute("ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD' ")
             df = pd.read_sql(sql_fetch, params={

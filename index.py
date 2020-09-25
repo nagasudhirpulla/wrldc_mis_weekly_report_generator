@@ -169,5 +169,5 @@ doc.save(dumpFileFullPath)
 print('Weekly report word file generation done...')
 
 # convert report to pdf
-convert(dumpFileFullPath, dumpFileFullPath.replace('.docx', '.pdf'))
-print('Weekly report pdf generation done...')
+# convert(dumpFileFullPath, dumpFileFullPath.replace('.docx', '.pdf'))
+# print('Weekly report pdf generation done...')
