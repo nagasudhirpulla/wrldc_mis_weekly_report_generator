@@ -7,7 +7,7 @@ from src.typeDefs.ictConstraint import IIctConstraint
 from src.typeDefs.transConstraint import ITransConstraint
 from src.typeDefs.lvNodesInfo import ILvNodesInfo
 from src.typeDefs.hvNodesInfo import IHvNodesInfo
-
+import datetime as dt
 
 class VoltageStatsDict(TypedDict):
     table1: List[dict]
@@ -17,6 +17,8 @@ class VoltageStatsDict(TypedDict):
 
 
 class IReportCxt(TypedDict):
+    startDtObj: dt.datetime
+    endDtObj: dt.datetime
     startDt: str
     endDt: str
     wkNum: float
