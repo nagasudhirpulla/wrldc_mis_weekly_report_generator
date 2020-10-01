@@ -19,7 +19,7 @@ def getWeekNumOfFinYr(inpDt: dt.datetime) -> int:
 
     # get first Monday before inpDt
     inpMonday = getMondayBeforeDt(inpDt)
-    
+
     # get week number
     weekNum = 1 + ((inpMonday-finStartMonday).days/7)
     return int(weekNum)
@@ -64,3 +64,18 @@ def getMondayBeforeDt(inpDt: dt.datetime) -> dt.datetime:
     while not dt.datetime.strftime(inpMonday, '%w') == '1':
         inpMonday = inpMonday - dt.timedelta(days=1)
     return inpMonday
+
+
+def getSundayAfterDt(inpDt: dt.datetime) -> dt.datetime:
+    """ gets the first Sunday after a specified date
+
+    Args:
+        inpDt (dt.datetime): input date
+
+    Returns:
+        dt.datetime: first Sunday after input date
+    """
+    inpSunday = inpDt
+    while not dt.datetime.strftime(inpSunday, '%w') == '0':
+        inpSunday = inpSunday + dt.timedelta(days=1)
+    return inpSunday
