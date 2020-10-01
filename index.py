@@ -1,6 +1,6 @@
 import argparse
 import datetime as dt
-from src.utils.timeUtils import getMondayBeforeDt
+from src.utils.timeUtils import getMondayBeforeDt, getSundayAfterDt
 from src.config.appConfig import getConfig
 from src.typeDefs.appConfig import IAppConfig
 from src.app.weeklyReportGenerator import WeeklyReportGenerator
@@ -31,12 +31,19 @@ appDbConStr: str = appConfig['appDbConStr']
 dumpFolder: str = appConfig['dumpFolder']
 
 # generate report word file
-tmplPath = "assets/weekly_report_template.docx"
+tmplPath: str = "assets/weekly_report_template.docx"
 
+# create weekly report
 wklyRprtGntr = WeeklyReportGenerator(appDbConStr)
-isSuccess: bool = wklyRprtGntr.generateWeeklyReport(
-    startDate, endDate, tmplPath, dumpFolder)
-if isSuccess:
+# use while loop to create multiple reports at once
+currDt: dt.datetime = startDate
+while currDt <= endDate:
+    currStartDt = getMondayBeforeDt(currDt)
+    currEndDt = getSundayAfterDt(currStartDt)
+    isWeeklyReportGenerationSuccess: bool = wklyRprtGntr.generateWeeklyReport(
+        currStartDt, currEndDt, tmplPath, dumpFolder)
+    currDt = currEndDt + dt.timedelta(days=1)
+if isWeeklyReportGenerationSuccess:
     print('Weekly report word file generation done!')
 else:
     print('Weekly report word file generation unsuccessful...')
