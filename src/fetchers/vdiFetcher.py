@@ -5,6 +5,7 @@ from typing import List, Tuple
 from src.typeDefs.stationwiseVdiData import IStationwiseVdi
 from src.typeDefs.stationVdiProfile import IStationVdiProfile
 from src.utils.stringUtils import convertHrsToSpanStr
+from src.appLogger import getAppLogger
 
 
 class VdiFetcher():
@@ -18,6 +19,7 @@ class VdiFetcher():
         """
 
         self.connString = appDbConnStr
+        self.appLogger = getAppLogger()
 
     def toDerivedVDIDict(self, df: pd.core.frame.DataFrame) -> IStationwiseVdi:
         """returns derivedVDIDict that has two keys 
@@ -80,13 +82,14 @@ class VdiFetcher():
         Returns:
             IStationwiseVdi: week VDI summary data for each 765 and 400 kv station 
         """
-
+        startDateLogString = dt.datetime.strftime(startDate, '%Y-%m-%d')
+        logExtra = {"startDate": startDateLogString}
         try:
             connection = cx_Oracle.connect(self.connString)
-
         except Exception as err:
-            print('error while creating a connection', err)
-
+            # print('error while creating a connection', err)
+            self.appLogger.error(
+                'error creating db connection for VDI creation', exc_info=err, extra=logExtra)
         else:
             # print(connection.version)
             try:
@@ -101,7 +104,9 @@ class VdiFetcher():
                                  'start_date': startDate}, con=connection)
 
             except Exception as err:
-                print('error while fetching weekly VDI data', err)
+                # print('error while fetching weekly VDI data', err)
+                self.appLogger.error(
+                    'error while VDI sql db fetch', exc_info=err, extra=logExtra)
                 return {'vdi400Rows': [], 'vdi765Rows': []}
             else:
                 print('VDI data fetch complete')

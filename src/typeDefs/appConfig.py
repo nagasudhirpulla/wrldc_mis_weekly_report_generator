@@ -6,3 +6,5 @@ class IAppConfig(TypedDict):
     dumpFolder: str
     flaskSecret: str
     flaskPort: str
+    logstashHost: str
+    logstashPort: int

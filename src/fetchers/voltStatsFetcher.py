@@ -2,6 +2,7 @@ import cx_Oracle
 import pandas as pd
 import datetime as dt
 from typing import List, Tuple, TypedDict
+from src.appLogger import getAppLogger
 
 
 class VoltStatsFetcher():
@@ -20,6 +21,7 @@ class VoltStatsFetcher():
         self.voltTable4 = []
         self.derivedVoltageDict = {'table1': self.voltTable1, 'table2': self.voltTable2,
                                    'table3': self.voltTable3, 'table4': self.voltTable4}
+        self.appLogger = getAppLogger()
 
     def appendTables(self, df: pd.core.frame.DataFrame) -> None:
         """ append rows for each table for each day
@@ -71,19 +73,21 @@ class VoltStatsFetcher():
                                  'table4':voltTable4
                                  }
         """
-
+        startDateLogString = dt.datetime.strftime(startDate, '%Y-%m-%d')
+        endDateLogString = dt.datetime.strftime(endDate, '%Y-%m-%d')
+        logExtra = {"startDate": startDateLogString,
+                    "endDate": endDateLogString}
         # generating dates between startDate and endDate
         dates = []
         delta = endDate - startDate
         for i in range(delta.days + 1):
             dates.append(startDate + dt.timedelta(days=i))
-
         try:
             connection = cx_Oracle.connect(self.connString)
-
         except Exception as err:
-            print('error while creating a connection', err)
-
+            # print('error while creating a connection', err)
+            self.appLogger.error(
+                'error creating db connection for stationwise voltage stats', exc_info=err, extra=logExtra)
         else:
             print(connection.version)
             try:
@@ -110,7 +114,9 @@ class VoltStatsFetcher():
                     self.appendTables(df)
 
             except Exception as err:
-                print('error while creating a cursor', err)
+                # print('error while creating a cursor', err)
+                self.appLogger.error(
+                'error while stationwise voltage stats sql db fetch', exc_info=err, extra=logExtra)
             else:
                 print('retrieval of derived voltage stats data complete')
                 connection.commit()

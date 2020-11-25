@@ -3,6 +3,7 @@ import pandas as pd
 import datetime as dt
 from typing import List, Tuple
 from src.typeDefs.iegcViolMsg import IIegcViolMsg
+from src.appLogger import getAppLogger
 
 
 class IegcViolMsgsFetcher():
@@ -16,6 +17,7 @@ class IegcViolMsgsFetcher():
         """
 
         self.connString = con_string
+        self.appLogger = getAppLogger()
 
     def fetchIegcViolMsgs(self, startDate: dt.datetime, endDate: dt.datetime) -> List[IIegcViolMsg]:
         """fetch derived frequency from mis_warehouse db 
@@ -25,7 +27,10 @@ class IegcViolMsgsFetcher():
         Returns:
             List[IIegcViolMsg]: List of IEGC violation messages for weekly report
         """
-
+        startDateLogString = dt.datetime.strftime(startDate, '%Y-%m-%d')
+        endDateLogString = dt.datetime.strftime(endDate, '%Y-%m-%d')
+        logExtra = {"startDate": startDateLogString,
+                    "endDate": endDateLogString}
         try:
             connection = cx_Oracle.connect(self.connString)
             cursor = connection.cursor()
@@ -38,9 +43,10 @@ class IegcViolMsgsFetcher():
             cursor.execute("ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD' ")
             df = pd.read_sql(sql_fetch, params={
                              'col1': startDate, 'col2': endDate}, con=connection)
-
-        except:
-            print('Error while fetching data from db')
+        except Exception as err:
+            # print('Error while fetching data from db')
+            self.appLogger.error(
+                'error while executing iegc violation messages db fetch sql', exc_info=err, extra=logExtra)
         finally:
             # closing database cursor and connection
             if cursor is not None:

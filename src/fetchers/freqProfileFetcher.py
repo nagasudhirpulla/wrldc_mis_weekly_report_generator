@@ -4,6 +4,7 @@ import datetime as dt
 from typing import List, Tuple
 from src.typeDefs.dayFreqProfile import IDayFreqProfile
 from src.typeDefs.freqProfileData import IFreqProfile
+from src.appLogger import getAppLogger
 
 
 class FrequencyProfileFetcher():
@@ -15,8 +16,8 @@ class FrequencyProfileFetcher():
         Args:
             con_string ([str]): connection string
         """
-
         self.connString = con_string
+        self.appLogger = getAppLogger()
 
     def toContextDict(self, df: pd.core.frame.DataFrame) -> IFreqProfile:
         """ return derivedFrequencyDict that has two keys 'freqProfRows', 'weeklyFDI'
@@ -67,12 +68,16 @@ class FrequencyProfileFetcher():
         Returns:
             IFreqProfile: frequency profile data
         """
-
+        startDateLogString = dt.datetime.strftime(startDate, '%Y-%m-%d')
+        endDateLogString = dt.datetime.strftime(endDate, '%Y-%m-%d')
+        logExtra = {"startDate": startDateLogString,
+                    "endDate": endDateLogString}
         try:
             connection = cx_Oracle.connect(self.connString)
         except Exception as err:
-            print('error while creating a connection', err)
-
+            # print('error while creating a connection', err)
+            self.appLogger.error(
+                'error creating db connection for derived frequency creation', exc_info=err, extra=logExtra)
         else:
             # print(connection.version)
             try:
@@ -88,10 +93,12 @@ class FrequencyProfileFetcher():
                                  'start_date': startDate, 'end_date': endDate}, con=connection)
 
             except Exception as err:
-                print('error while fetching derived freq data for weekly report', err)
+                # print('error while fetching derived freq data for weekly report', err)
+                self.appLogger.error(
+                    'error while derived frequency sql db fetch', exc_info=err, extra=logExtra)
             else:
-                print('derived freq data fetch complete')
                 connection.commit()
+                print('derived freq data fetch complete')
         finally:
             cur.close()
             connection.close()

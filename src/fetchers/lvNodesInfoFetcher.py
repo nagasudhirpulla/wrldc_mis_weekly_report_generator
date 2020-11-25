@@ -3,7 +3,7 @@ import pandas as pd
 import datetime as dt
 from typing import List, Tuple
 from src.typeDefs.lvNodesInfo import ILvNodesInfo
-
+from src.appLogger import getAppLogger
 
 class LvNodesInfoFetcher():
     """This class fetches LV Nodes info for weekly report
@@ -14,8 +14,8 @@ class LvNodesInfoFetcher():
         Args:
             con_string ([str]): connection string
         """
-
         self.connString = con_string
+        self.appLogger = getAppLogger()
 
     def fetchLvNodesInfo(self, startDate: dt.datetime, endDate: dt.datetime) -> List[ILvNodesInfo]:
         """fetch LV Nodes info for weekly report from warehouse db 
@@ -25,7 +25,10 @@ class LvNodesInfoFetcher():
         Returns:
             List[ILvNodesInfo]: List of LV Nodes info for weekly report
         """
-
+        startDateLogString = dt.datetime.strftime(startDate, '%Y-%m-%d')
+        endDateLogString = dt.datetime.strftime(endDate, '%Y-%m-%d')
+        logExtra = {"startDate": startDateLogString,
+                    "endDate": endDateLogString}
         try:
             connection = cx_Oracle.connect(self.connString)
             cursor = connection.cursor()
@@ -37,8 +40,10 @@ class LvNodesInfoFetcher():
                         """
             cursor.execute("ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD' ")
             df = pd.read_sql(sql_fetch, con=connection)
-        except:
-            print('Error while fetching data from db')
+        except Exception as err:
+            # print('Error while fetching data from db')
+            self.appLogger.error(
+                'error while LV Nodes data sql db fetch', exc_info=err, extra=logExtra)
         finally:
             # closing database cursor and connection
             if cursor is not None:

@@ -1,3 +1,4 @@
+*.db
 config.xlsx
 __pycache__
 *.py[cod]

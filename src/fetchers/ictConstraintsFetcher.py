@@ -3,6 +3,7 @@ import pandas as pd
 import datetime as dt
 from typing import List, Tuple
 from src.typeDefs.ictConstraint import IIctConstraint
+from src.appLogger import getAppLogger
 
 
 class IctConstraintsFetcher():
@@ -14,8 +15,8 @@ class IctConstraintsFetcher():
         Args:
             con_string ([str]): connection string
         """
-
         self.connString = con_string
+        self.appLogger = getAppLogger()
 
     def fetchIctConstraints(self, startDate: dt.datetime, endDate: dt.datetime) -> List[IIctConstraint]:
         """fetch Ict Constraints for weekly report from warehouse db 
@@ -25,11 +26,13 @@ class IctConstraintsFetcher():
         Returns:
             List[IIctConstraint]: List of Ict Constraints for weekly report
         """
-
+        startDateLogString = dt.datetime.strftime(startDate, '%Y-%m-%d')
+        endDateLogString = dt.datetime.strftime(endDate, '%Y-%m-%d')
+        logExtra = {"startDate": startDateLogString,
+                    "endDate": endDateLogString}
         try:
             connection = cx_Oracle.connect(self.connString)
             cursor = connection.cursor()
-
             sql_fetch = """
                         select * from ict_constraint_data 
                         where 
@@ -37,8 +40,10 @@ class IctConstraintsFetcher():
                         """
             cursor.execute("ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD' ")
             df = pd.read_sql(sql_fetch, con=connection)
-        except:
-            print('Error while fetching data from db')
+        except Exception as err:
+            # print('Error while fetching data from db')
+            self.appLogger.error(
+                'error while ict constraints sql db fetch', exc_info=err, extra=logExtra)
         finally:
             # closing database cursor and connection
             if cursor is not None:

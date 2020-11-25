@@ -4,6 +4,7 @@ import datetime as dt
 from typing import List, Tuple
 from src.typeDefs.angleViolSummary import IAngleViolSummary
 from src.typeDefs.angleViolation import IAngleViolation
+from src.appLogger import getAppLogger
 
 
 class AnglViolationsFetcher():
@@ -17,6 +18,7 @@ class AnglViolationsFetcher():
         """
 
         self.connString = con_string
+        self.appLogger = getAppLogger()
 
     def fetchPairsAnglViolations(self, startDate: dt.datetime, endDate: dt.datetime) -> IAngleViolSummary:
         """fetch wide and adjescent angle violations summary 
@@ -27,7 +29,10 @@ class AnglViolationsFetcher():
         Returns:
             IAngleViolSummary: wide and adjescent angle violations summary for station pairs of the given time window
         """
-
+        startDateLogString = dt.datetime.strftime(startDate, '%Y-%m-%d')
+        endDateLogString = dt.datetime.strftime(endDate, '%Y-%m-%d')
+        logExtra = {"startDate": startDateLogString,
+                    "endDate": endDateLogString}
         try:
             connection = cx_Oracle.connect(self.connString)
             cursor = connection.cursor()
@@ -56,9 +61,11 @@ class AnglViolationsFetcher():
                 'start_date': startDate, 'end_date': endDate, 'anglType': 'wide'}, con=connection)
             adjAnglDf = pd.read_sql(sql_fetch, params={
                 'start_date': startDate, 'end_date': endDate, 'anglType': 'adj'}, con=connection)
-        except Exception as e:
-            print('Error while fetching pair angle violation data from db')
-            print(e)
+        except Exception as err:
+            # print('Error while fetching pair angle violation data from db')
+            # print(e)
+            self.appLogger.error(
+                'error while executing angle pairs sepration data fetch sql', exc_info=err, extra=logExtra)
             res: IAngleViolSummary = {
                 'wideAnglViols': [],
                 'adjAnglViols': []

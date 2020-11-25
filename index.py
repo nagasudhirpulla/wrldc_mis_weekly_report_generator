@@ -4,6 +4,7 @@ from src.utils.timeUtils import getMondayBeforeDt, getSundayAfterDt
 from src.config.appConfig import getConfig
 from src.typeDefs.appConfig import IAppConfig
 from src.app.weeklyReportGenerator import WeeklyReportGenerator
+from src.appLogger import initAppLogger
 
 # get start and end dates from command line
 # initialise default command line input values
@@ -24,9 +25,13 @@ args = parser.parse_args()
 # access each command line input from the dictionary
 startDate = dt.datetime.strptime(args.start_date, '%Y-%m-%d')
 endDate = dt.datetime.strptime(args.end_date, '%Y-%m-%d')
+# get app config
+appConfig: IAppConfig = getConfig()
+
+# initialize logger
+appLogger = initAppLogger(appConfig)
 
 # get app db connection string from config file
-appConfig: IAppConfig = getConfig()
 appDbConStr: str = appConfig['appDbConStr']
 dumpFolder: str = appConfig['dumpFolder']
 
@@ -44,6 +49,8 @@ while currDt <= endDate:
         currStartDt, currEndDt, tmplPath, dumpFolder)
     currDt = currEndDt + dt.timedelta(days=1)
 if isWeeklyReportGenerationSuccess:
-    print('Weekly report word file generation done!')
+    # print('Weekly report word file generation done!')
+    appLogger.info('Weekly report word file generation done!')
 else:
-    print('Weekly report word file generation unsuccessful...')
+    # print('Weekly report word file generation unsuccessful...')
+    appLogger.error('Weekly report word file generation unsuccessful...')
