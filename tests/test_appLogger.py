@@ -1,6 +1,5 @@
 import unittest
 import datetime as dt
-from src.utils.timeUtils import getWeekNumOfFinYr, getFinYearForDt, getSundayAfterDt, getMondayBeforeDt
 from src.config.appConfig import getConfig
 from src.appLogger import initAppLogger
 
