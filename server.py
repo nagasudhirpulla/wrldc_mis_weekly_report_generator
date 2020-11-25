@@ -7,11 +7,15 @@ from src.config.appConfig import IAppConfig
 from src.utils.timeUtils import getMondayBeforeDt, getSundayAfterDt
 from src.app.weeklyReportGenerator import WeeklyReportGenerator
 from flask import Flask, request, jsonify
+from src.appLogger import initAppLogger
 
 app = Flask(__name__)
 
 # get application config
 appConfig: IAppConfig = getConfig()
+
+# initialize logger
+appLogger = initAppLogger(appConfig)
 
 # Set the secret key to some random bytes
 app.secret_key = appConfig['flaskSecret']
