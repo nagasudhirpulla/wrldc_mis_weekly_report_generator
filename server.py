@@ -3,19 +3,19 @@ This is the web server that acts as a service that creates outages raw data
 '''
 import datetime as dt
 from src.config.appConfig import getConfig
+from src.appLogger import initAppLogger
 from src.config.appConfig import IAppConfig
 from src.utils.timeUtils import getMondayBeforeDt, getSundayAfterDt
 from src.app.weeklyReportGenerator import WeeklyReportGenerator
 from flask import Flask, request, jsonify
-from src.appLogger import initAppLogger
-
-app = Flask(__name__)
 
 # get application config
 appConfig: IAppConfig = getConfig()
 
 # initialize logger
 appLogger = initAppLogger(appConfig)
+
+app = Flask(__name__)
 
 # Set the secret key to some random bytes
 app.secret_key = appConfig['flaskSecret']
