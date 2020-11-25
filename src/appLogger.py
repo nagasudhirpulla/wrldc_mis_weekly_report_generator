@@ -3,7 +3,7 @@ from logstash_async.handler import AsynchronousLogstashHandler
 from logstash_async.formatter import LogstashFormatter
 from logging import Logger
 import pandas as pd
-from src.appConfig import getConfig
+from src.config.appConfig import getConfig
 
 appLogger: Logger = logging.getLogger()
 
