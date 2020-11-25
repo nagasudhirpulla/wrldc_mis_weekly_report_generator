@@ -59,3 +59,4 @@ def create_weekly_report():
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=int(appConfig['flaskPort']), debug=True)
+    appLogger.info("started weekly report service")
