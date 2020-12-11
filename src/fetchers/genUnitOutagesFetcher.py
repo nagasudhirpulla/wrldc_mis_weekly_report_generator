@@ -98,8 +98,13 @@ def fetchMajorGenUnitOutages(conStr: str, startDt: dt.datetime, endDt: dt.dateti
         outageTag = row[outageTagInd]
         if outageTag == 'Outage':
             outageTag = None
-        elif not(reason == None) and (outageTag.strip().lower() == reason.strip().lower()):
-            reason = None
+        else:
+            strippedOutageTag = outageTag.strip().lower()
+            if not(reason == None) and (strippedOutageTag == reason.strip().lower()):
+                reason = None
+            if not(remarks == None) and (strippedOutageTag == remarks.strip().lower()):
+                remarks = None
+
         reasonStr = ' / '.join([r for r in [outageTag, reason,
                                             remarks] if not(r == None)])
         # create outage record
