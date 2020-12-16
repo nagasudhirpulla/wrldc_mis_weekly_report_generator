@@ -41,6 +41,8 @@ def removeRedundantRemarks(outageTag, reason, remarks):
     Returns:
         outageTag, reason, remarks: corrected outageTag, reason and remarks
     """
+    if outageTag == None:
+        return outageTag, reason, remarks
     strippedOutageTag = outageTag.strip().lower()
     if strippedOutageTag == 'outage':
         outageTag = None
